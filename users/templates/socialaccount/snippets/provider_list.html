@@ -1,0 +1,29 @@
+{% load static i18n %}
+{% load allauth socialaccount %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    {% element provider_list %}
+        {% for provider in socialaccount_providers %}
+        <div class="button-container">
+            {% if provider.id == "openid" %}
+                {% for brand in provider.get_brands %}
+                    {% provider_login_url provider openid=brand.openid_url process=process as href %}
+                    <link rel="stylesheet" href="{% static 'css/theme.css' %}" /> 
+                    <button onclick="location.href='{{ href }}'">{{ brand.name }}</button>
+                {% endfor %}
+            {% else %}
+                {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
+                <!-- This condition is for other providers including Google -->
+                {% if provider.id == "google" %}
+                    <!-- Replace the 'element' tag with an HTML button for Google -->
+                    <button onclick="location.href='{{ href }}'">{{ provider.name }}</button>
+                {% else %}
+                    <!-- Retain the original element rendering for other providers -->
+                    {% element provider name=provider.name provider_id=provider.id href=href %}
+                    {% endelement %}
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% endelement %}
+{% endif %}

@@ -1,0 +1,99 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    background: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.menu, .messages {
+    text-align: center;
+}
+
+.menu ul, .messages ul {
+    padding: 0;
+    display: inline-block;
+    text-align: left;
+}
+
+.menu li, .messages li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.centered-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button, .btn-login {
+    background-color: #232D4b; /* Accent color for button background */
+    color: white; /* White text color for contrast */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: inline-block; /* for side-by-side display */
+    margin: 0 5px; /* Adjusts spacing around the buttons */
+    text-decoration: none;
+}
+
+.btn-login:hover, button:hover {
+    background-color: #1b2135; /* A darker shade of the accent color for the hover state */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+}
+
+.btn-login:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #232D4b; /* Focus state with a double outline using the accent color */
+}
+
+
+.divider {
+    border-top: 2px solid #232D4b; /* Changes the divider line to the accent color */
+    margin: 20px 0; /* Adds some vertical spacing around the divider */
+}
+
+.logo {
+    display: block;
+    margin: 20px auto; /* Adds margin above and below the logo */
+    max-width: 150%; /* Ensures the image is responsive and doesn't overflow its container */
+    height: auto; /* Maintains the aspect ratio of the image */
+    width: 150px; /* Adjust this value to set the width as you desire */
+}
+.button-container {
+    display: flex;
+    justify-content: center; /* Center the buttons within the container */
+    gap: 10px; /* Adjust the gap between the buttons */
+}
+.button-center {
+    text-align: center;
+}
+body {
+    /* Other styles... */
+    color: #232D4b; /* Set global text color */
+    font-family: 'Roboto', sans-serif; /* Your chosen font */
+    font-size: 16px; /* Default font size */
+    line-height: 1.6; /* Default line height */
+}
+ul {
+    padding-left: 0;
+    margin-left: 0;
+    list-style-type: none; /* This removes the bullet points */
+}

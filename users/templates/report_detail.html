@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Detail - Report #{{ report.id }}</title>
+    <style>
+      /* Define styles for the body and html elements */
+      body,
+      html {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Header styles */
+      h1 {
+        color: #232d4b;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      /* Container styles */
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      /* Text styles */
+      p {
+        color: #232d4b;
+      }
+
+      /* Link styles */
+      a {
+        color: #e57200;
+      }
+
+      /* Form styles */
+      form {
+        margin-top: 20px;
+      }
+
+      /* Map styles */
+      #map {
+        height: 300px;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      /* Back button styles */
+      .back-button-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000; /* Ensure the button appears above other content */
+      }
+
+      .print-button-container {
+        position: fixed;
+        top: 20px;
+        right: 200px;
+        z-index: 1000; /* Ensure the button appears above other content */
+      }
+
+      .print-button {
+            background-color: #232d4b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+
+        }
+
+      .button-container {
+            display: flex;
+            align-items: center;
+        }
+
+      .back-button {
+        background-color: #232d4b;
+        color: #ffffff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+
+      .back-button:hover,
+        .print-button:hover {
+            background-color: #1a1f3a;
+        }
+
+      /* Footer styles */
+      .footer {
+        background-color: #f2f2f2;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px;
+        position: static;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        font-size: 12px; /* Adjust font size */
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="button-container">
+      <div class="back-button-container">
+        <a href="/" class="back-button">Back to Dashboard</a>
+      </div>
+      <div class="print-button-container">
+        <a href="#" class="print-button" onclick="window.print()">Print Report</a>
+      </div>
+    </div>
+
+    <h1>Report Detail - Report #{{ report.id }}</h1>
+    <div class="container">
+      <!-- Load first and last name -->
+      {% if report.lastName and report.firstName %}
+      <p><strong>Name:</strong> {{ report.firstName }} {{report.lastName}}</p>
+      {%else%}
+      <p><strong>Name:</strong> No name submitted.</p>
+      {% endif %}
+      <p><strong>Email:</strong> {{ report.email }}</p>
+      <p><strong>Crime Type:</strong> {{ report.crimeType }}</p>
+      <p><strong>Subject:</strong> {{ report.subject }}</p>
+        <strong>Date and Time of Incident:</strong> {{ report.timeOfIncident }}
+      </p>
+      <p><strong>Report Description:</strong> {{ report.reportDescription }}</p>
+      {% if report.descriptionItems %}
+      <p>
+        <strong>Description of Items:</strong> {{ report.descriptionItems }}
+      </p>
+      {%else%}
+      <p><strong>Description of Items:</strong> No description submitted.</p>
+      {%endif%} {% if report.latitude is not none %}
+      <div
+        id="map"
+        onload="initMap({{report.latitude}},{{report.longitude}})"
+      ></div>
+      {% else %}
+      <p><strong>Location:</strong> No Location Submitted</p>
+      {% endif %}
+
+      <p>
+        <strong>Is user willing to be contacted after?</strong> {{ report.discussion }}
+      </p>
+
+      {% if report.file %}
+      <strong>File:</strong><br>
+      <iframe src="https://a-03-static.s3.us-east-2.amazonaws.com/{{ report.file }}" width="100%" height="500px"></iframe>
+
+      {% else %}
+      <p><strong>File:</strong> No file attached</p>
+
+      {% endif %}
+      <strong>Status:</strong> {{ report.status }}<br />
+      <p><strong>Notes:</strong><br>{{ report.notes|default:"No notes yet." }}</p>
+
+      {% if user.is_authenticated and user.is_staff and is_admin_view%}
+      <form id="reportForm" method="post">
+        {% csrf_token %}
+        <p>
+          <strong>Notes:</strong><br />
+          <textarea id="noteField" name="note" rows="4" cols="50">{{ report.notes }}</textarea>
+        </p>
+        <input type="hidden" name="action" id="formAction" value="save_note"> <!-- Hidden input to control the action -->
+        <button
+          type="submit"
+          style="
+            background-color: #232d4b;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+          "
+        >
+          Save Note
+        </button>
+        {% if report.status != 'Resolved' %}
+        <button
+          type="button"
+          onclick="resolveReport()"
+          style="
+            background-color: #e57200;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+          "
+        >
+          Resolve
+        </button>
+        {% endif %}
+      </form>
+      {%endif%}
+      <script>
+        function validateForm() {
+          var note = document.getElementById('noteField').value; // Ensure this ID matches the textarea's ID
+          if (note.trim() === '') {
+              alert('Please submit a note before updating the status.'); // Alert for empty note
+              return false; // Prevent form submission
+          }
+          return true; // Allow form submission if validation passes
+      }
+    </script>
+
+
+      <div id="output"></div>
+      <script>
+        function resolveReport() {
+          if (confirm("Are you sure you want to resolve this report?")) {
+              // Validate note before resolving
+              if (!validateForm()) {
+                  return; // Stop the function if validation fails
+              }
+              // If validation passes, submit the form
+              document.getElementById('reportForm').submit();
+          }
+      }
+      </script>
+      <script>
+                var lat = {{report.latitude}};
+                var long = {{report.longitude}};
+        // Initialize and add the map
+            function initMap() {
+
+                // Specify the coordinates
+                var coordinates = {lat: lat, lng: long}; // Example coordinates (New York City)
+
+                // Create a new map centered at the specified coordinates
+                var map = new google.maps.Map(
+                document.getElementById('map'), {zoom: 10, center: coordinates});
+
+                // Add a marker at the specified coordinates
+                var marker = new google.maps.Marker({position: coordinates, map: map});
+            }
+      </script>
+
+      <!-- Load the map when the page loads -->
+      <script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initMap"
+      ></script>
+    </div>
+    <footer class="footer">
+      <p>
+        &copy; Spring 2024 - CS 3240 UVA Crime Reporting. All rights reserved.
+      </p>
+      <p>
+        This website is not monitored. Visit
+        <a href="https://justreportit.virginia.edu/">Just Report It!</a> to
+        submit an actual crime.
+      </p>
+    </footer>
+  </body>
+</html>

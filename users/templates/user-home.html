@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <!-- Include DataTables CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .title {
+        color: #232d4b;
+        margin: 0;
+      }
+
+      .button-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .back-button {
+        background-color: #232d4b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        margin-right: 10px; /* Add margin-right to create a gap */
+        height: 40px;
+        font-size: 15px;
+      }
+
+      .print-button {
+        background-color: #232d4b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        height: 40px;
+        font-size: 15px;
+      }
+
+      .back-button:hover,
+      .print-button:hover {
+        background-color: #1a1f3a;
+      }
+
+      #report-table {
+        width: 100%;
+      }
+
+      .footer {
+        position: fixed; /* Fix the position */
+        bottom: 0; /* Align to the bottom */
+        left: 0; /* Align to the left */
+        width: 100%; /* Full width */
+        background-color: #f2f2f2; /* Light grey background */
+        padding: 10px; /* Adjust padding */
+        text-align: center; /* Align text to the center */
+        font-size: 12px; /* Adjust font size */
+        z-index: -1;
+
+      }
+
+      .btn-login {
+        background-color: #232d4b; /* The color you want for the button */
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        display: inline-block;
+        text-decoration: none; /* Remove underline from links */
+        margin: 0 5px;
+      }
+
+      .btn-login:hover, .btn-login:focus {
+          background-color: #357AE8; /* Darker shade for hover state */
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for button */
+          text-decoration: none; /* Remove underline from links on hover */
+          outline: none;
+      }
+
+    </style>
+  </head>
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Admin Dashboard</title>
+      <!-- Include DataTables CSS -->
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+      />
+      <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+    <body>
+      <div class="container">
+        <header class="header">
+          <h2 class="title">View Reports</h2>
+          <div class="button-container">
+            <div class="back-button-container">
+              <a href="/" class="back-button">Back to Dashboard</a>
+            </div>
+
+          </div>
+        </header>
+        <main>
+          <table id="report-table" class="display">
+            <thead>
+              <tr>
+                <th>Report</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for report in user_reports %}
+              <tr>
+                <td>
+                  <a href="{% url 'user_report_detail' report.id %}"
+                    class="btn btn-login">
+                  {% if report.subject == "No Subject" %}Report {{ report.id }}{% else %}{{ report.subject }}{% endif %}
+               </a>
+                </td>
+                <td>{{ report.status }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </main>
+        <footer class="footer">
+          <p>
+            &copy; Spring 2024 - CS 3240 UVA Crime Reporting. All rights
+            reserved.
+          </p>
+          <p>
+            This website is not monitored. Visit
+            <a href="https://justreportit.virginia.edu/">Just Report It!</a> to
+            submit an actual crime.
+          </p>
+        </footer>
+      </div>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script
+        type="text/javascript"
+        charset="utf8"
+        src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"
+      ></script>
+      <script>
+        $(document).ready(function () {
+            $('#report-table').DataTable({
+                dom: '<"top"lfr>t<"bottom"ip>', // Custom layout for DataTables components
+                columnDefs: [
+                    { type: 'num', targets: [0] } // Sort the first column as numeric
+                ],
+            });
+        });
+    </script>
+    </body>
+  </html>
+</html>

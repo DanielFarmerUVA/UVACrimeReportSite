@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anonymous Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* Define styles for the body and html elements */
+      body,
+      html {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      /* Define styles for the content container */
+      .content {
+        text-align: left;
+        margin: 20px;
+      }
+      /* Define styles for generic buttons */
+      .button {
+        display: inline-block;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 0;
+      }
+      /* Define styles for the top container */
+      .top {
+        width: 100%;
+        height: 35%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        background-color: white;
+        position: absolute;
+      }
+      /* Define styles for the blue rectangle */
+      .rectangle {
+        width: 100%;
+        height: 5vh; /* Adjust height as needed */
+        background-color: #232d4b;
+      }
+      /* Define styles for the main heading */
+      .myH {
+        position: absolute; /* Position h1 absolutely */
+        margin: 0; /* Remove default margin */
+        color: white; /* Set text color to white */
+        z-index: 0;
+        top: 70%;
+        left: 15%;
+        font-size: 350%;
+      }
+
+      /* Define styles for the secondary heading */
+      .myH2 {
+        position: relative; /* Position h1 absolutely */
+        margin: 0; /* Remove default margin */
+        color: black; /* Set text color to black */
+        z-index: 0;
+        left: 15%;
+        font-size: 35px; /* Adjust font size */
+      }
+      /* Define styles for the warning container */
+      .warning {
+        position: relative;
+        background-color: yellow;
+        height: 35px;
+        width: 300px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Define styles for the name button */
+      .nameButton {
+        position: absolute;
+        top: 12%;
+        right: 10%;
+        z-index: 100;
+      }
+      /* Define styles for the dropdown */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+        z-index: 100;
+      }
+
+      /* Define styles for the dropdown content */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+      }
+
+      /* Define styles for dropdown links */
+      .dropdown-content a {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: black;
+        z-index: 100;
+      }
+      /* Define styles for dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #f1f1f1;
+        z-index: 100;
+      }
+
+      /* Define styles for dropdown on hover */
+      .dropdown:hover .dropdown-content {
+        display: block;
+        z-index: 100;
+      }
+      /* Define styles for the border container */
+      .border-container {
+        width: 80%; /* Adjust width of the border container */
+        height: 50%; /* Adjust height of the border container */
+        top: 30vh;
+        padding: 20px; /* Add padding inside the border */
+        box-sizing: border-box; /* Include border and padding in width and height */
+        position: relative;
+        text-align: left;
+        flex-direction: column;
+        z-index: 0;
+      }
+      /* Define styles for the white box */
+      .white-box {
+        width: 90%; /* Adjust width of the white box */
+        height: 18vh; /* Adjust height as needed */
+        margin-top: 1vh; /* Add spacing between rectangle and white box */
+        background-color: white; /* White background color */
+        position: absolute;
+        top: 285px; /* Position below the blue line */
+        left: 5%; /* Adjust horizontal positioning */
+        z-index: 2; /* Ensure the box is above other content */
+      }
+      /* Define styles for the emergency text */
+      .emergency-text {
+        color: black; /* Set text color to black */
+        padding: 10px; /* Add padding to the text */
+        text-align: center; /* Center the text */
+        user-select: text; /* Allow text selection */
+      }
+      /* Define styles for the orange horizontal line */
+      .orange-line {
+        width: 100%;
+        height: 2px;
+        background-color: #e57200;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      /* Define styles for the login container */
+      .login-container {
+        display: flex;
+        justify-content: center;
+      }
+      /* Define styles for the center text */
+      .center-text {
+        text-align: center;
+        position: relative;
+      }
+      /* Define styles for the login button */
+      .login-button {
+        background-color: white;
+        color: #232d4b;
+        height: 150px;
+        width: 200px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        font-size: 18px;
+        border-radius: 10px;
+        margin-right: 20px;
+        border: 2px solid #232d4b;
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; /* Add transition effect */
+      }
+
+      /* Define styles for the login button on hover */
+      .login-button:hover {
+        background-color: #232d4b;
+        color: white;
+        box-shadow: 0px 4px 8px black; /* Add shadow on hover */
+      }
+      /* Style the dropdown button */
+      .dropbtn {
+        background-color: #232d4b; /* Button background color */
+        color: white; /* Button text color */
+        padding: 10px 20px; /* Button padding */
+        border: none; /* Remove button border */
+        border-radius: 5px; /* Button border radius */
+        cursor: pointer; /* Set cursor to pointer on hover */
+      }
+      /* Style the dropdown content */
+      .dropdown-content {
+        display: none; /* Hide dropdown content by default */
+        position: absolute; /* Position dropdown content */
+        background-color: #f9f9f9; /* Dropdown background color */
+        min-width: 160px; /* Set minimum width */
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); /* Add shadow to dropdown */
+        z-index: 1; /* Ensure dropdown appears above other elements */
+      }
+
+      /* Style the links inside the dropdown */
+      .dropdown-content a {
+        color: black; /* Link text color */
+        padding: 12px 16px; /* Link padding */
+        text-decoration: none; /* Remove underline from links */
+        display: block; /* Make links block-level elements */
+      }
+
+      /* Change link color on hover */
+      .dropdown-content a:hover {
+        background-color: #f9dcbf; /* Change background color on hover */
+      }
+
+      /* Define styles for the Make report logo */
+      .report-logo {
+        font-size: 24px; /* Adjust size as needed */
+        margin-right: 10px; /* Add spacing between the logo and text */
+        color: #e57200;
+      }
+
+      /* Define styles for the footer */
+      .footer {
+        position: fixed; /* Fix the position */
+        bottom: 0; /* Align to the bottom */
+        left: 0; /* Align to the left */
+        width: 100%; /* Full width */
+        background-color: #f2f2f2; /* Light grey background */
+        padding: 10px; /* Adjust padding */
+        text-align: center; /* Align text to the center */
+        font-size: 12px; /* Adjust font size */
+        z-index: -1;
+
+      }
+
+      a {
+        color: #E57200;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <img
+        src="../static/users/images/uvacampusaerial.jpg"
+        alt="uvapic"
+        width="100%"
+        height="85%"
+      />
+      <div class="rectangle"></div>
+      <div class="white-box">
+        <div class="emergency-text">
+          <p>
+            <span style="color: red; font-weight: bold"
+              >For crimes in progress or crimes that just occurred, or in an
+              emergency, call 911. The dispatcher can send police, fire and
+              medical rescue. </span
+            ><br /><br />
+            In a non-emergency only, call <strong>434 924-7166</strong>.
+            <br /><br />
+            If you have additional questions about the reporting process, email
+            UPD at <strong>police@virginia.edu</strong>.
+          </p>
+        </div>
+      </div>
+      <div class="orange-line"></div>
+
+      <div class="myH">UVA Report a Crime</div>
+
+      <div class="nameButton">
+        <div class="dropdown">
+          <button class="dropbtn">Guest User</button>
+          <div class="dropdown-content">
+            <a href="logout" style="font-size: 14px"> Logout </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-container">
+      <div class="content">
+        <div class="center-text">
+          <h2>Welcome!</h2>
+        </div>
+
+        <div class="login-container">
+          <a href="{% url 'report' %}" class="login-button">
+            <div class="center-text">
+              <i <i class="fa-solid fa-plus report-logo"></i>
+              <strong>Make a Report</strong>
+              <!-- make a new report -->
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <p>
+        &copy; Spring 2024 - CS 3240 UVA Crime Reporting. All rights reserved.
+      </p>
+      <p>
+        This website is not monitored. Visit
+        <a href="https://justreportit.virginia.edu/">Just Report It!</a> to
+        submit an actual crime.
+      </p>
+    </footer>
+  </body>
+</html>

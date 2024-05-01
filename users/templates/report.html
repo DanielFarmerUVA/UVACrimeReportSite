@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% csrf_token %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Report</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous" />
+    <script async src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .CreateNewReport{
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        .controls {
+            margin-top: 10px;
+            border: 1px solid transparent;
+            border-radius: 2px 0 0 2px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            height: 32px;
+            outline: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #pac-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            margin-left: 12px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 300px;
+        }
+
+        #pac-input:focus {
+            border-color: #4d90fe;
+        }
+
+        .pac-container {
+            font-family: Roboto;
+        }
+
+        #type-selector {
+            color: #fff;
+            background-color: #4d90fe;
+            padding: 5px 11px 0px 11px;
+        }
+
+        #type-selector label {
+            font-family: Roboto;
+            font-size: 13px;
+            font-weight: 300;
+        }
+
+        .alert-info {
+            background-color: #232D4B;
+            color: white;
+            border-color: #232D4B;
+        }
+    </style>
+</head>
+
+
+<body onload="initMap()">
+    <div class = "CreateNewReport">
+        <h2>Create New Report</h2>
+    </div>
+
+    <div class="container mt-5">
+        <div class="alert alert-info" role="alert">
+            <strong>Please note:</strong> This form of report only applies to: larceny, vandalism, annoying/harassing phone calls, computer harassment, drugs, or assaults. All other crimes should be reported directly to the UVA Police Department at 434-924-7166, or by dialing 911. Reports may also be filed in person at the station. If the incident occurred off campus, please contact the appropriate local law enforcement agency. Please provide as much detail as possible.
+        </div>
+        <!-- Ensure the action points to the URL mapped to report_upload and method is POST -->
+        <!-- Update the action to use the 'submit' URL name which points to report_upload view -->
+        <form enctype="multipart/form-data" method="post" action="{% url 'submit' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <hr>
+
+
+                <h4>Contact Information</h4>
+                <label for="lastName">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" name="lastName">
+
+                <label for="firstName">First Name:</label>
+                <input type="text" class="form-control" id="firstName" name="firstName">
+
+                <label for="email">Email:</label>
+                <small class="form-text text-muted">Provide your email address if you want to be notified of the status of your report.</small>
+                <input type="email" class="form-control" id="email" value="{{ request.user.email|default_if_none:'' }}" name="email">
+
+                <hr>
+
+                <h4>Report Data</h4>
+
+                <label for="crimeType">Type of Crime <strong>*</strong>:</label>
+                <select class="form-control" id="crimeType" name="crimeType" required>
+                    <option value="Larceny/Theft">Larceny/Theft</option>
+                    <option value="Vandalism">Vandalism</option>
+                    <option value="Assault">Assault</option>
+                    <option value="Harassing Phone Calls">Harassing Phone Calls</option>
+                    <option value="Computer Harassment">Computer Harassment</option>
+                    <option value="Narcotics/Drugs">Narcotics/Drugs</option>
+                </select>
+
+                
+                <label for="subject"> Brief Description</label> <strong>*</strong> :</label>
+                <textarea class = "form-control" id="subject" name="subject" maxlength="255" rows="1" placeholder="Brief Description here..."></textarea>
+
+                <label for="timeOfIncident">Date and Time of Incident <strong>*</strong>:</label>
+                <input type="datetime-local" class="form-control" id="timeOfIncident" name="timeOfIncident" required>
+
+                <label for="reportDescription">Description of Incident <strong>*</strong> :</label>
+                <textarea class="form-control" id="reportDescription" name="reportDescription" required rows="3" placeholder="Enter the report description here..."></textarea>
+
+                <label for="descriptionItems">Description of items stolen/vandalized or personal injuries:</label>
+                <textarea class="form-control" id="descriptionItems" name="descriptionItems" rows="3" placeholder="Enter description here..."></textarea>
+
+                <label for="location">Enter Location or Click Map</label>
+                <div id="map" style="height: 400px; width: 100%"></div>
+                <input type="hidden" id="latitude" name="latitude" />
+                <input type="hidden" id="longitude" name="longitude" />
+
+
+                <hr>
+
+            <div class="form-group">
+                <label for="reportFile">Upload File (optional)</label>
+                <input type="file" class="form-control-file" id="reportFile" name="reportFile" />
+            </div>
+
+            <div class="form-group">
+                <label for="discussion"><strong>*</strong> Would you like to discuss the report with a police officer? If so, an officer will meet with you as soon as the report is processed. If you do not wish to meet with an officer, the report will be considered "information only" and you will only be contacted should further information develop (if contact information is provided).</label>
+                <div class="form-check" required>
+                    <input class="form-check-input" type="radio" name="discussion" id="discussionYes" value="yes">
+                    <label class="form-check-label" for="discussionYes">
+                        Yes
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="discussion" id="discussionNo" value="no">
+                    <label class="form-check-label" for="discussionNo">
+                        No
+                    </label>
+                </div>
+            </div>
+            
+            
+            <hr>
+            
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="agreementCheck" required>
+                    <label class="form-check-label" for="agreementCheck">
+                        <strong>*</strong> By submitting this form you agree that you have read and understand that (a) filing a false report is a crime punishable as a Class 1 Misdemeanor in accordance with of the Code of Virginia and (b) information you provide may be shared with, but not limited to, the Office of Student Conduct, police, state and federal agencies, and involved individual's parent or guardian pursuant to USC § 1232g, where applicable and permitted by law.
+                    </label>
+                </div>
+            </div>
+
+            <p><strong>* Denotes required field.</strong></p>
+
+            <button type="submit" name="action" value="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script async>
+        var marker;
+        let map;
+        let geocoder;
+        let responseDiv;
+        let response;
+        let inputText;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 38.0347, lng: -78.504 },
+                zoom: 14,
+            });
+
+            google.maps.event.addListener(map, "click", function (event) {
+                placeMarker(event.latLng); // Call function to place marker
+            });
+
+
+            geocoder = new google.maps.Geocoder();
+
+            inputText = document.createElement("input");
+
+            inputText.type = "text";
+            inputText.placeholder = "Enter a location";
+            inputText.style.padding = "10px 20px 10px 20px";
+            inputText.style.marginTop = "10px";
+            inputText.style.width = "300px";
+
+            const clearButton = document.createElement("input");
+
+            clearButton.type = "button";
+            clearButton.value = "Clear";
+            clearButton.classList.add("button", "button-secondary");
+            clearButton.style.padding = "10px 20px 10px 20px";
+            clearButton.style.marginTop = "10px";
+            clearButton.style.marginLeft = "5px";
+            response = document.createElement("pre");
+            response.id = "response";
+            response.innerText = "";
+            responseDiv = document.createElement("div");
+            responseDiv.id = "response-container";
+            responseDiv.appendChild(response);
+
+
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(inputText);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(clearButton);
+            autocomplete = new google.maps.places.Autocomplete(inputText);
+            clearButton.addEventListener("click", function() {
+                clear();
+            });
+
+        // Add listener to handle place changes
+        autocomplete.addListener("place_changed", function() {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                window.alert("No details available for input: '" + place.name + "'");
+                return;
+            }
+
+            map.setCenter(place.geometry.location);
+            map.setZoom(14);
+            placeMarker(place.geometry.location);
+        });
+            marker = new google.maps.Marker({
+                map,
+              });
+        }
+
+        function placeMarker(location) {
+            if (marker) {
+                marker.setMap(null);
+            }
+            marker = new google.maps.Marker({
+                position: location,
+                map: map,
+            });
+
+            document.getElementById("latitude").value = location.lat();
+            document.getElementById("longitude").value = location.lng();
+        }
+        function clear() {
+            marker.setMap(null);
+            inputText.value = "";
+            responseDiv.style.display = "none";
+        }
+
+function geocode(request) {
+    clear();
+    geocoder
+        .geocode(request)
+        .then((result) => {
+            const {results} = result;
+
+            map.setCenter(results[0].geometry.location);
+            marker.setPosition(results[0].geometry.location);
+            marker.setMap(map);
+            responseDiv.style.display = "block";
+            response.innerText = JSON.stringify(result, null, 2);
+            document.getElementById("latitude").value = results[0].geometry.location.lat();
+            document.getElementById("longitude").value = results[0].geometry.location.lng();
+            return results;
+        })
+        .catch((e) => {
+            alert("Geocode was not successful for the following reason: " + e);
+        });
+}
+
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&libraries=places,geocoding&callback=initMap&v=weekly" async defer></script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script async src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+</body>
+</html>
