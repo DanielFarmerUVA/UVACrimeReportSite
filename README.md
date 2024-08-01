@@ -1,5 +1,5 @@
 # UVA Crime Report
-## This project is the result of a semester long group assignment to create a whistleblower interface for UVA students for the Advanced Software Development course. We built this using Django, deployed it one heroku, and utilized Amazon for S3 storage. Beyond that we utilized google login and google maps for interactive location reporting of crimes. 
+## This project is the result of a semester long group assignment to create a whistleblower interface for UVA students for the Advanced Software Development course. We built this using Django, deployed it on heroku, and utilized Amazon S3 for storage. Beyond that we utilized google login and google maps for interactive location reporting of crimes. 
 
 #### If you want to see the final project you can view the deployed version [here](https://project-a-03-uva-d449ae8204db.herokuapp.com/). 
 
