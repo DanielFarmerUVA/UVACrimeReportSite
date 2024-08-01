@@ -1,4 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/qgEWmaMc)
 # UVA Crime Report
 ## This project is the result of a semester long group assignment to create a whistleblower interface for UVA students for the Advanced Software Development course. We built this using Django, deployed it one heroku, and utilized Amazon for S3 storage. Beyond that we utilized google login and google maps for interactive location reporting of crimes. 
 
